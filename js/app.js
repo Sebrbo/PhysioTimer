@@ -149,7 +149,14 @@
   function getFormConfig() {
     const form = $('configForm');
     const raw = {};
-    durationFields.forEach(field => { const value = form.elements.namedItem(field).value.trim(); raw[field] = !value && (field === 'cycleRest' || field === 'cooldown') ? 0 : Core.parseTime(value); });
+    // Minutes and seconds are separate controls so the colon remains visible during editing.
+    durationFields.forEach(field => {
+      const minsText = form.elements.namedItem(`${field}Min`).value.trim();
+      const secsText = form.elements.namedItem(`${field}Sec`).value.trim();
+      const valid = /^\d{1,3}$/.test(minsText) && /^\d{1,2}$/.test(secsText);
+      const minutes = Number(minsText), seconds = Number(secsText);
+      raw[field] = valid && minutes <= 600 && seconds < 60 ? minutes * 60 + seconds : NaN;
+    });
     raw.rounds = Number(form.elements.namedItem('rounds').value);
     raw.cycles = currentMode === 'tabata' ? Number(form.elements.namedItem('cycles').value) : 1;
     return Core.validateConfig(raw, currentMode);
@@ -164,7 +171,10 @@
     $('configTitle').textContent = currentMode.toUpperCase();
     $('tabataFields').hidden = currentMode !== 'tabata';
     $('configForm').elements.namedItem('cycles').required = currentMode === 'tabata';
-    durationFields.forEach(field => $('configForm').elements.namedItem(field).value = Core.formatTime(c[field]));
+    durationFields.forEach(field => {
+      $('configForm').elements.namedItem(`${field}Min`).value = String(Math.floor(c[field] / 60)).padStart(2, '0');
+      $('configForm').elements.namedItem(`${field}Sec`).value = String(c[field] % 60).padStart(2, '0');
+    });
     $('configForm').elements.namedItem('rounds').value = c.rounds;
     $('configForm').elements.namedItem('cycles').value = c.cycles;
     $('configError').textContent = ''; configPreview(); openDialog('configDialog');
@@ -240,6 +250,19 @@
     $('editProgramButton').addEventListener('click', editConfig);
     $('savePresetButton').addEventListener('click', openSave);
     $('configForm').addEventListener('submit', saveConfig);
+    // Select an entire number when tapped; normalize to two digits on leaving the field.
+    document.querySelectorAll('.duration-entry input').forEach(input => {
+      input.addEventListener('focus', () => input.select());
+      input.addEventListener('click', () => input.select());
+      input.addEventListener('input', () => {
+        const maxLength = input.name.endsWith('Min') ? 3 : 2;
+        const sanitized = input.value.replace(/\D/g, '').slice(0, maxLength);
+        if (input.value !== sanitized) input.value = sanitized;
+      });
+      input.addEventListener('blur', () => {
+        if (input.value) input.value = input.value.padStart(2, '0');
+      });
+    });
     $('configForm').addEventListener('input', configPreview);
     $('saveForm').addEventListener('submit', savePreset);
     $('settingsButton').addEventListener('click', () => { renderSettings(); openDialog('settingsDialog'); });

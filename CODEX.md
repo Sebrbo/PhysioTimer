@@ -33,3 +33,7 @@ program saved/loaded while same mode selected, audio, language and iPhone viewpo
 Code: PolyForm Noncommercial 1.0.0 (`LICENCE`).
 Non-code assets: CC BY-NC 4.0 (`LICENSE-CC-BY-NC-4.0`).
 These are source-available noncommercial licenses, not OSI-approved open source licenses.
+
+## Duration input (v0.3.2)
+
+The 5 time settings consist of two named inputs per field: `${field}Min` and `${field}Sec`, enclosed by `.duration-entry` and a permanent `:`. The `durationFields` loop in `js/app.js` binds these to integer seconds and validates seconds under 60. Preserve input names and the colon UI if editing duration behavior.

@@ -7,6 +7,10 @@ PhysioTimer is a free, installable and offline-capable workout interval timer,
 for physiotherapy exercises, rehabilitation and sport. This is not a medical device
 and does not provide diagnosis or treatment recommendations.
 
+## Version v0.3.2 — Saisie MM:SS améliorée
+
+Les réglages de durées proposent désormais deux zones indépendantes (minutes et secondes), séparées par un `:` fixe. Cliquer dans une zone sélectionne ses chiffres ; la durée est recalculée pendant la saisie. Les secondes sont limitées à 0–59 ; les préférences déjà enregistrées sont préservées.
+
 ## Version v0.3.1 — Charte graphique Physio
 
 Palette partagée avec les applications PhysioTempo, PhysioReact et PhysioStroop : bleu nuit `#071426`, cyan `#18D7FF`, blanc `#F7FAFF`. La signification des phases est conservée par les libellés et des couleurs à fort contraste : ambre `#F0B35C` pour préparation, cyan électrique `#19D3EB` pour exercice, violet profond `#7045B5` pour repos et violet clair pour repos entre cycles.
@@ -59,7 +63,7 @@ node --test tests/test-core.cjs
 ```
 
 Quand un script ou une feuille de style change, incrémenter le numéro de version
-`?v=4` dans `index.html`, le `CACHE_NAME` et les chemins de `APP_SHELL`
+`?v=5` dans `index.html`, le `CACHE_NAME` et les chemins de `APP_SHELL`
 dans `service-worker.js` afin de diffuser la nouvelle version aux PWA installées.
 
 ## Limitations navigateur

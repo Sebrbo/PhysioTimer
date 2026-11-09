@@ -196,3 +196,63 @@ button:focus-visible,input:focus-visible,select:focus-visible {
 @media(prefers-reduced-motion:reduce) {
   .phase-panel {transition:none;}
 }
+
+/* v0.3.2 — Accessible two-part MM:SS editor. The colon cannot be erased. */
+.duration-entry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 0;
+  width: 122px;
+  min-width: 122px;
+  padding: 5px 8px;
+  border: 1px solid rgba(142,198,238,.35);
+  border-radius: 10px;
+  background: #102f51;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.config-field .duration-entry input {
+  flex: 0 1 auto;
+  width: 43px;
+  min-width: 0;
+  margin: 0;
+  padding: 6px 1px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  box-shadow: none;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.config-field .duration-entry input:first-child { text-align: right; }
+.config-field .duration-entry input:last-child { text-align: left; }
+.duration-colon {
+  flex: 0 0 auto;
+  padding: 0 2px;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 900;
+  color: #8feaff;
+  pointer-events: none;
+}
+.config-field .duration-entry input:focus-visible {
+  outline: 2px solid #18d7ff;
+  outline-offset: 0;
+  background: rgba(24,215,255,.1);
+}
+.duration-entry:focus-within {
+  border-color: #18d7ff;
+  box-shadow: 0 0 0 2px rgba(24,215,255,.12);
+}
+@media(max-width:360px) {
+  .duration-entry {width: 110px;min-width: 110px;padding:4px 5px;}
+  .config-field .duration-entry input {width:39px;font-size:18px;}
+}

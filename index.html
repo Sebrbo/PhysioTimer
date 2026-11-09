@@ -8,7 +8,7 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
-  <link rel="stylesheet" href="./css/style.css?v=4">
+  <link rel="stylesheet" href="./css/style.css?v=5">
   <title>PhysioTimer — Tabata & Rounds</title>
 </head>
 <body>
@@ -54,15 +54,15 @@
 
   <dialog id="configDialog" class="sheet-dialog"><form id="configForm" class="sheet-content" method="dialog"><header class="sheet-heading"><button type="button" class="subtle-button" data-close="configDialog" data-i18n="cancel">Annuler</button><h2 id="configTitle">TABATA</h2><button type="submit" class="save-button" data-i18n="save">Enregistrer</button></header><p class="sheet-description" data-i18n="configHint">Personnalise les intervalles de ta séance.</p>
     <div class="field-list">
-      <label class="config-field"><span><i class="color-dot yellow"></i><b data-i18n="preparation">Préparation</b><small data-i18n="prepHint">Compte à rebours avant de commencer</small></span><input name="prep" inputmode="numeric" type="text" placeholder="00:05" required aria-label="Durée de préparation minutes et secondes"></label>
-      <label class="config-field"><span><i class="color-dot green"></i><b data-i18n="exercise">Exercice</b><small data-i18n="exerciseHint">Durée d'un effort</small></span><input name="work" inputmode="numeric" type="text" placeholder="00:20" required aria-label="Durée d'exercice minutes et secondes"></label>
-      <label class="config-field"><span><i class="color-dot red"></i><b data-i18n="rest">Repos</b><small data-i18n="restHint">Entre deux rounds</small></span><input name="rest" inputmode="numeric" type="text" placeholder="00:10" required aria-label="Durée du repos minutes et secondes"></label>
+      <div class="config-field"><span><i class="color-dot yellow"></i><b data-i18n="preparation">Préparation</b><small data-i18n="prepHint">Compte à rebours avant de commencer</small></span><div class="duration-entry" role="group" aria-label="Préparation (minutes et secondes)"><input type="text" name="prepMin" inputmode="numeric" pattern="[0-9]*" maxlength="3" required aria-label="Minutes — Préparation" autocomplete="off" spellcheck="false"><span class="duration-colon" aria-hidden="true">:</span><input type="text" name="prepSec" inputmode="numeric" pattern="[0-9]*" maxlength="2" required aria-label="Secondes — Préparation" autocomplete="off" spellcheck="false"></div></div>
+      <div class="config-field"><span><i class="color-dot green"></i><b data-i18n="exercise">Exercice</b><small data-i18n="exerciseHint">Durée d'un effort</small></span><div class="duration-entry" role="group" aria-label="Exercice (minutes et secondes)"><input type="text" name="workMin" inputmode="numeric" pattern="[0-9]*" maxlength="3" required aria-label="Minutes — Exercice" autocomplete="off" spellcheck="false"><span class="duration-colon" aria-hidden="true">:</span><input type="text" name="workSec" inputmode="numeric" pattern="[0-9]*" maxlength="2" required aria-label="Secondes — Exercice" autocomplete="off" spellcheck="false"></div></div>
+      <div class="config-field"><span><i class="color-dot red"></i><b data-i18n="rest">Repos</b><small data-i18n="restHint">Entre deux rounds</small></span><div class="duration-entry" role="group" aria-label="Repos (minutes et secondes)"><input type="text" name="restMin" inputmode="numeric" pattern="[0-9]*" maxlength="3" required aria-label="Minutes — Repos" autocomplete="off" spellcheck="false"><span class="duration-colon" aria-hidden="true">:</span><input type="text" name="restSec" inputmode="numeric" pattern="[0-9]*" maxlength="2" required aria-label="Secondes — Repos" autocomplete="off" spellcheck="false"></div></div>
       <label class="config-field"><span><i class="color-dot blue"></i><b data-i18n="rounds">Rounds</b><small data-i18n="roundsHint">Nombre d'exercices par cycle</small></span><input name="rounds" type="number" inputmode="numeric" min="1" max="99" required></label>
       <div class="tabata-fields" id="tabataFields">
         <label class="config-field"><span><i class="color-dot yellow"></i><b data-i18n="cycles">Cycles</b><small data-i18n="cyclesHint">Nombre de séries de rounds</small></span><input name="cycles" type="number" inputmode="numeric" min="1" max="20" required></label>
-        <label class="config-field"><span><i class="color-dot yellow"></i><b data-i18n="restCycles">Repos entre cycles</b><small data-i18n="restCyclesHint">Seulement si plusieurs cycles</small></span><input name="cycleRest" inputmode="numeric" type="text" placeholder="00:30"></label>
+        <div class="config-field"><span><i class="color-dot yellow"></i><b data-i18n="restCycles">Repos entre cycles</b><small data-i18n="restCyclesHint">Seulement si plusieurs cycles</small></span><div class="duration-entry" role="group" aria-label="Repos entre cycles (minutes et secondes)"><input type="text" name="cycleRestMin" inputmode="numeric" pattern="[0-9]*" maxlength="3" required aria-label="Minutes — Repos entre cycles" autocomplete="off" spellcheck="false"><span class="duration-colon" aria-hidden="true">:</span><input type="text" name="cycleRestSec" inputmode="numeric" pattern="[0-9]*" maxlength="2" required aria-label="Secondes — Repos entre cycles" autocomplete="off" spellcheck="false"></div></div>
       </div>
-      <label class="config-field"><span><i class="color-dot blue"></i><b data-i18n="cooldown">Récupération finale</b><small data-i18n="cooldownHint">Optionnelle, après le dernier effort</small></span><input name="cooldown" inputmode="numeric" type="text" placeholder="00:00"></label>
+      <div class="config-field"><span><i class="color-dot blue"></i><b data-i18n="cooldown">Récupération finale</b><small data-i18n="cooldownHint">Optionnelle, après le dernier effort</small></span><div class="duration-entry" role="group" aria-label="Récupération finale (minutes et secondes)"><input type="text" name="cooldownMin" inputmode="numeric" pattern="[0-9]*" maxlength="3" required aria-label="Minutes — Récupération finale" autocomplete="off" spellcheck="false"><span class="duration-colon" aria-hidden="true">:</span><input type="text" name="cooldownSec" inputmode="numeric" pattern="[0-9]*" maxlength="2" required aria-label="Secondes — Récupération finale" autocomplete="off" spellcheck="false"></div></div>
     </div><div id="configError" class="form-error" role="alert"></div><p class="duration-preview"><span data-i18n="estimatedTotal">Durée totale estimée :</span> <strong id="configTotal">04:00</strong></p>
   </form></dialog>
 
@@ -82,6 +82,6 @@
   <div id="liveAnnouncement" class="sr-only" aria-live="polite"></div>
   <script src="./js/i18n.js?v=2" defer></script>
   <script src="./js/core.js?v=2" defer></script>
-  <script src="./js/app.js?v=4" defer></script>
+  <script src="./js/app.js?v=5" defer></script>
 </body>
 </html>
