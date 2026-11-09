@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#171a1b">
+  <meta name="description" content="PhysioTimer : minuteur Tabata, rounds et chronomètre gratuit pour l’entraînement et la rééducation, utilisable hors ligne.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./css/style.css?v=2">
+  <title>PhysioTimer — Tabata & Rounds</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand" aria-label="PhysioTimer"><span class="brand-mark" aria-hidden="true">◉</span> Physio<span>Timer</span></div>
+      <div class="header-info" id="headerInfo"><span id="modeTitle">TABATA</span><strong id="totalRemaining">04:00</strong></div>
+      <div class="header-actions">
+        <button type="button" class="icon-button" id="fullscreenButton" title="Mode plein écran" aria-label="Mode plein écran">⛶</button>
+        <button type="button" class="icon-button" id="settingsButton" title="Réglages sonores" aria-label="Réglages sonores">⚙</button>
+      </div>
+    </header>
+
+    <main id="timerView" class="timer-view">
+      <section class="phase-panel" id="phasePanel" aria-label="Compte à rebours de la phase">
+        <div class="phase-label" id="phaseLabel">PRÉPARATION</div>
+        <div class="phase-time" id="phaseTime" role="timer" aria-label="Temps restant dans la phase">00:05</div>
+        <div class="phase-bottom"><span id="phaseProgressLabel">Prêt à démarrer ?</span><div class="progress-track"><span id="phaseProgressBar"></span></div></div>
+      </section>
+      <section class="next-panel" id="nextPanel"><span class="next-dot"></span><span id="nextLabel">ENSUITE : EXERCICE</span><strong id="nextDuration">00:20</strong></section>
+      <section class="dashboard" aria-label="Commandes du minuteur">
+        <div class="dashboard-count"><strong id="roundsLeft">8</strong><span id="roundsCaption">ROUNDS<br>RESTANTS</span></div>
+        <div class="play-container">
+          <button type="button" id="playButton" class="play-button" aria-label="Commencer"><span id="playIcon">▶</span></button>
+          <strong id="playCaption">COMMENCER</strong>
+          <button type="button" id="resetButton" class="text-action" aria-label="Réinitialiser le minuteur" data-i18n="reset">↻ Réinitialiser</button>
+        </div>
+        <div class="dashboard-count right"><strong id="cyclesLeft">1</strong><span id="cyclesCaption">CYCLES<br>RESTANTS</span></div>
+      </section>
+      <div class="program-actions"><button type="button" id="editProgramButton" class="outline-button" data-i18n="configure">⚙ Configurer</button><button type="button" id="savePresetButton" class="outline-button" data-i18n="savePreset">☆ Enregistrer</button></div>
+    </main>
+
+    <main id="stopwatchView" class="stopwatch-view" hidden>
+      <div class="stopwatch-face"><p data-i18n="stopwatch">CHRONOMÈTRE</p><strong id="stopwatchTime" role="timer">00:00.0</strong></div>
+      <div class="stopwatch-actions"><button id="stopwatchLap" type="button" class="outline-button" data-i18n="lap">Tour</button><button id="stopwatchPlay" type="button" class="play-button">▶</button><button id="stopwatchReset" type="button" class="outline-button" data-i18n="resetStopwatch">Remettre à zéro</button></div>
+      <div class="lap-list-wrap"><h2 data-i18n="laps">Tours</h2><ol id="lapList" class="lap-list"></ol></div>
+    </main>
+
+    <main id="presetsView" class="presets-view" hidden><div class="page-heading"><h1 data-i18n="myPresets">Mes programmes</h1><p data-i18n="myPresetsHint">Retrouve tes séances enregistrées sur cet appareil.</p></div><div id="presetsList" class="presets-list"></div></main>
+
+    <nav class="bottom-nav" aria-label="Modes"><button class="nav-button is-selected" type="button" data-mode="tabata"><span class="nav-icon" aria-hidden="true">◴</span><span>TABATA</span></button><button class="nav-button" type="button" data-mode="rounds"><span class="nav-icon" aria-hidden="true">◷</span><span>ROUNDS</span></button><button class="nav-button" type="button" data-mode="stopwatch"><span class="nav-icon" aria-hidden="true">◉</span><span data-i18n="navStopwatch">CHRONO</span></button><button class="nav-button" type="button" data-mode="presets"><span class="nav-icon" aria-hidden="true">☆</span><span data-i18n="navPresets">PROGRAMMES</span></button></nav>
+  </div>
+
+  <dialog id="configDialog" class="sheet-dialog"><form id="configForm" class="sheet-content" method="dialog"><header class="sheet-heading"><button type="button" class="subtle-button" data-close="configDialog" data-i18n="cancel">Annuler</button><h2 id="configTitle">TABATA</h2><button type="submit" class="save-button" data-i18n="save">Enregistrer</button></header><p class="sheet-description" data-i18n="configHint">Personnalise les intervalles de ta séance.</p>
+    <div class="field-list">
+      <label class="config-field"><span><i class="color-dot yellow"></i><b data-i18n="preparation">Préparation</b><small data-i18n="prepHint">Compte à rebours avant de commencer</small></span><input name="prep" inputmode="numeric" type="text" placeholder="00:05" required aria-label="Durée de préparation minutes et secondes"></label>
+      <label class="config-field"><span><i class="color-dot green"></i><b data-i18n="exercise">Exercice</b><small data-i18n="exerciseHint">Durée d'un effort</small></span><input name="work" inputmode="numeric" type="text" placeholder="00:20" required aria-label="Durée d'exercice minutes et secondes"></label>
+      <label class="config-field"><span><i class="color-dot red"></i><b data-i18n="rest">Repos</b><small data-i18n="restHint">Entre deux rounds</small></span><input name="rest" inputmode="numeric" type="text" placeholder="00:10" required aria-label="Durée du repos minutes et secondes"></label>
+      <label class="config-field"><span><i class="color-dot blue"></i><b data-i18n="rounds">Rounds</b><small data-i18n="roundsHint">Nombre d'exercices par cycle</small></span><input name="rounds" type="number" inputmode="numeric" min="1" max="99" required></label>
+      <div class="tabata-fields" id="tabataFields">
+        <label class="config-field"><span><i class="color-dot yellow"></i><b data-i18n="cycles">Cycles</b><small data-i18n="cyclesHint">Nombre de séries de rounds</small></span><input name="cycles" type="number" inputmode="numeric" min="1" max="20" required></label>
+        <label class="config-field"><span><i class="color-dot yellow"></i><b data-i18n="restCycles">Repos entre cycles</b><small data-i18n="restCyclesHint">Seulement si plusieurs cycles</small></span><input name="cycleRest" inputmode="numeric" type="text" placeholder="00:30"></label>
+      </div>
+      <label class="config-field"><span><i class="color-dot blue"></i><b data-i18n="cooldown">Récupération finale</b><small data-i18n="cooldownHint">Optionnelle, après le dernier effort</small></span><input name="cooldown" inputmode="numeric" type="text" placeholder="00:00"></label>
+    </div><div id="configError" class="form-error" role="alert"></div><p class="duration-preview"><span data-i18n="estimatedTotal">Durée totale estimée :</span> <strong id="configTotal">04:00</strong></p>
+  </form></dialog>
+
+  <dialog id="settingsDialog" class="sheet-dialog"><div class="sheet-content"><header class="sheet-heading"><span></span><h2 data-i18n="settings">PARAMÈTRES</h2><button type="button" class="save-button" data-close="settingsDialog" data-i18n="done">Fait</button></header><div class="settings-list">
+    <label class="setting"><span><b data-i18n="sound">Effets sonores</b><small data-i18n="soundHint">Bips au changement de phase</small></span><input type="checkbox" id="settingSound"></label>
+    <label class="setting"><span><b data-i18n="volume">Volume</b></span><input type="range" id="settingVolume" min="0" max="100" step="5" aria-label="Volume des bips"></label>
+    <label class="setting"><span><b data-i18n="soundType">Type de son</b></span><select id="settingSoundType"><option value="beep" data-i18n="beep">Bip</option><option value="bell" data-i18n="bell">Cloche</option></select></label>
+    <label class="setting"><span><b data-i18n="countdown">Compte à rebours sonore</b><small data-i18n="countdownHint">Bips pendant les 3 dernières secondes</small></span><input type="checkbox" id="settingCountdown"></label>
+    <label class="setting"><span><b data-i18n="voice">Guidage vocal</b><small data-i18n="voiceHint">Annonce « Exercice » et « Repos » si le navigateur le permet</small></span><input type="checkbox" id="settingVoice"></label>
+    <label class="setting"><span><b data-i18n="vibration">Vibrations</b><small data-i18n="vibrationHint">Non disponible sur certains appareils, notamment iPhone</small></span><input type="checkbox" id="settingVibration"></label>
+    <label class="setting"><span><b data-i18n="wakeLock">Garder l'écran allumé</b><small data-i18n="wakeLockHint">Si pris en charge par le navigateur</small></span><input type="checkbox" id="settingWakeLock"></label>
+  <label class="setting"><span><b data-i18n="language">Langue / Language</b><small data-i18n="langHint">Langue de l'interface et du guidage vocal</small></span><select id="settingLanguage" aria-label="Langue"><option value="auto" data-i18n="auto">Auto (système)</option><option value="fr">Français</option><option value="en">English</option></select></label>
+  </div><p class="settings-note" data-i18n="settingsNote">PhysioTimer fonctionne sans compte. Tes paramètres et programmes restent sur cet appareil.</p>
+  <p class="settings-note">© 2026 Sebrbo · <a href="https://github.com/Sebrbo/PhysioTimer" target="_blank" rel="noopener noreferrer">GitHub / Source</a> · <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener noreferrer">PolyForm Noncommercial</a> · <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC 4.0</a></p></div></dialog>
+
+  <dialog id="saveDialog" class="small-dialog"><form id="saveForm" method="dialog"><h2 data-i18n="saveProgramTitle">Enregistrer le programme</h2><label class="save-name"><span data-i18n="programName">Nom du programme</span><input id="presetName" type="text" maxlength="60" required placeholder="Ex. Renforcement cheville"></label><div class="dialog-footer"><button type="button" class="outline-button" data-close="saveDialog" data-i18n="cancel">Annuler</button><button type="submit" class="solid-button" data-i18n="save">Enregistrer</button></div></form></dialog>
+  <div id="liveAnnouncement" class="sr-only" aria-live="polite"></div>
+  <script src="./js/i18n.js?v=2" defer></script>
+  <script src="./js/core.js?v=2" defer></script>
+  <script src="./js/app.js?v=2" defer></script>
+</body>
+</html>
