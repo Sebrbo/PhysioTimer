@@ -14,7 +14,7 @@
 
 
 /* ===========================================================================
-   PhysioTimer v0.3 — Physio family visual identity
+   PhysioTimer v0.3.1 — Physio family visual identity
    Inspired by the navy/cyan visual language of PhysioTempo, PhysioReact
    and PhysioStroop. One visible, accessible phase colour per activity.
    Copyright (c) 2026 Sebrbo and contributors — PolyForm Noncommercial 1.0.0
@@ -26,9 +26,9 @@
   --surface2: #102b4d;
   --text: #f7faff;
   --muted: #aabbd0;
-  --yellow: #f0b35c; /* prepare */
-  --green: #18d7ff;  /* exercise (old semantic variable retained for CSS compatibility) */
-  --red: #356fa7;    /* rest (old semantic variable retained for CSS compatibility) */
+  --yellow: #f0b35c; /* preparation: amber */
+  --green: #19d3eb;  /* exercise: electric cyan (legacy semantic variable) */
+  --red: #7045b5;    /* rest: deep purple (legacy semantic variable) */
   --blue: #18d7ff;   /* app highlight */
   --border: rgba(142, 198, 238, .24);
   --focus: #67e7ff;
@@ -91,21 +91,21 @@ button:focus-visible,input:focus-visible,select:focus-visible {
   --phase-fill:#061c35;
   background:
     radial-gradient(42rem 25rem at 46% 0%,rgba(255,255,255,.3),transparent 71%),
-    linear-gradient(150deg,#83edff,#18d7ff 64%,#09b9e7);
+    linear-gradient(150deg,#8deefa,#19d3eb 64%,#08b5d4);
 }
 .phase-panel[data-phase="rest"] {
   --phase-ink:#fff;
   --phase-track:rgba(255,255,255,.25);
   --phase-fill:#fff;
   background:
-    radial-gradient(39rem 27rem at 48% 0%,rgba(195,228,255,.14),transparent 70%),
-    linear-gradient(153deg,#427cb7,#356fa7 63%,#24598e);
+    radial-gradient(39rem 27rem at 48% 0%,rgba(231,210,255,.16),transparent 70%),
+    linear-gradient(153deg,#8862c9,#7045b5 63%,#522b8f);
 }
 .phase-panel[data-phase="cycleRest"] {
   --phase-ink:#fff;
   --phase-track:rgba(255,255,255,.25);
   --phase-fill:#fff;
-  background:linear-gradient(145deg,#6b86c5,#4b62a8 76%,#3d528f);
+  background:linear-gradient(145deg,#9778d4,#7953b9 76%,#603a9c);
 }
 .phase-panel[data-phase="cooldown"] {
   --phase-ink:#09213b;

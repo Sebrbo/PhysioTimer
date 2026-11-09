@@ -28,7 +28,7 @@
   let elapsedMs = 0, startedAt = 0, running = false, finished = false, lastSegmentIndex = -1, lastCountSound = '';
   let clockHandle = null, audioCtx = null, wakeLock = null;
   let stopwatchMs = 0, stopwatchStartedAt = 0, stopwatchRunning = false, lastLapMs = 0, laps = [];
-  const COLORS = { prep: '#f0b35c', work: '#18d7ff', rest: '#356fa7', cycleRest: '#5b75b6', cooldown: '#9ac8ee', done: '#3fc9d9' };
+  const COLORS = { prep: '#f0b35c', work: '#19d3eb', rest: '#7045b5', cycleRest: '#7953b9', cooldown: '#9ac8ee', done: '#3fc9d9' };
   const labels = () => ({ prep: t('phasePrepare'), work: t('phaseWork'), rest: t('phaseRest'), cycleRest: t('phaseCycleRest'), cooldown: t('phaseCooldown'), done: t('phaseDone') });
   const audioConstructor = globalThis.AudioContext || globalThis.webkitAudioContext;
   const clock = () => performance.now();
