@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#171a1b">
+  <meta name="theme-color" content="#071426">
   <meta name="description" content="PhysioTimer : minuteur Tabata, rounds et chronomètre gratuit pour l’entraînement et la rééducation, utilisable hors ligne.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
-  <link rel="stylesheet" href="./css/style.css?v=2">
+  <link rel="stylesheet" href="./css/style.css?v=3">
   <title>PhysioTimer — Tabata & Rounds</title>
 </head>
 <body>
@@ -23,7 +23,7 @@
     </header>
 
     <main id="timerView" class="timer-view">
-      <section class="phase-panel" id="phasePanel" aria-label="Compte à rebours de la phase">
+      <section class="phase-panel" id="phasePanel" data-phase="prep" aria-label="Compte à rebours de la phase">
         <div class="phase-label" id="phaseLabel">PRÉPARATION</div>
         <div class="phase-time" id="phaseTime" role="timer" aria-label="Temps restant dans la phase">00:05</div>
         <div class="phase-bottom"><span id="phaseProgressLabel">Prêt à démarrer ?</span><div class="progress-track"><span id="phaseProgressBar"></span></div></div>
@@ -82,6 +82,6 @@
   <div id="liveAnnouncement" class="sr-only" aria-live="polite"></div>
   <script src="./js/i18n.js?v=2" defer></script>
   <script src="./js/core.js?v=2" defer></script>
-  <script src="./js/app.js?v=2" defer></script>
+  <script src="./js/app.js?v=3" defer></script>
 </body>
 </html>

@@ -7,12 +7,16 @@ PhysioTimer is a free, installable and offline-capable workout interval timer,
 for physiotherapy exercises, rehabilitation and sport. This is not a medical device
 and does not provide diagnosis or treatment recommendations.
 
+## Version v0.3.0 — Charte graphique Physio
+
+Palette partagée avec les applications PhysioTempo, PhysioReact et PhysioStroop : bleu nuit `#071426`, cyan `#18D7FF`, blanc `#F7FAFF`. La signification des phases est conservée par les libellés et des couleurs à fort contraste : ambre `#F0B35C` pour préparation, cyan pour exercice, bleu `#356FA7` pour repos et bleu-violet pour repos entre cycles.
+
 ## Fonctions (FR)
 
 - **Tabata** : préparation, exercice, repos, rounds, cycles et repos entre cycles.
 - **Rounds** : préparation, exercice, repos et nombre de rounds.
 - **Chronomètre** : départ, pause, remise à zéro et tours.
-- Affichage géant et couleurs : jaune (préparation), vert (effort), rouge (repos).
+- Affichage géant et couleurs : ambre (préparation), cyan dynamique (effort), bleu apaisant (repos).
 - Durée totale restante, phase suivante, rounds et cycles restants.
 - Démarrage, pause/reprise, réinitialisation, bip, compte à rebours sonore,
   guidage vocal facultatif, vibrations quand disponibles.
@@ -56,7 +60,7 @@ node --test tests/test-core.cjs
 ```
 
 Quand un script ou une feuille de style change, incrémenter le numéro de version
-`?v=2` dans `index.html`, le `CACHE_NAME` et les chemins de `APP_SHELL`
+`?v=3` dans `index.html`, le `CACHE_NAME` et les chemins de `APP_SHELL`
 dans `service-worker.js` afin de diffuser la nouvelle version aux PWA installées.
 
 ## Limitations navigateur

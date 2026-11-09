@@ -11,3 +11,188 @@
 @media(max-width:370px) { .settings-list .setting:last-child select { min-width: 130px; } }
 
 .settings-note a { color: var(--green); text-underline-offset: 2px; }
+
+
+/* ===========================================================================
+   PhysioTimer v0.3 — Physio family visual identity
+   Inspired by the navy/cyan visual language of PhysioTempo, PhysioReact
+   and PhysioStroop. One visible, accessible phase colour per activity.
+   Copyright (c) 2026 Sebrbo and contributors — PolyForm Noncommercial 1.0.0
+   =========================================================================== */
+:root {
+  color-scheme: dark;
+  --bg: #071426;
+  --surface: #0e233f;
+  --surface2: #102b4d;
+  --text: #f7faff;
+  --muted: #aabbd0;
+  --yellow: #f0b35c; /* prepare */
+  --green: #18d7ff;  /* exercise (old semantic variable retained for CSS compatibility) */
+  --red: #356fa7;    /* rest (old semantic variable retained for CSS compatibility) */
+  --blue: #18d7ff;   /* app highlight */
+  --border: rgba(142, 198, 238, .24);
+  --focus: #67e7ff;
+}
+html {background:#071426;}
+body {
+  background:
+    radial-gradient(65rem 25rem at 50% -8rem, rgba(24,215,255,.12), transparent 70%),
+    linear-gradient(145deg,#06111f,#071426 55%,#0b2441);
+}
+.app-shell {
+  background: #071426;
+  box-shadow: 0 20px 80px rgba(0,0,0,.25);
+}
+.app-header {
+  position:relative;
+  background:
+    radial-gradient(25rem 9rem at 52% -3rem,rgba(24,215,255,.13),transparent 90%),
+    linear-gradient(110deg,#06172d,#0b2a4b 54%,#06172d);
+  border-bottom:1px solid rgba(24,215,255,.28);
+}
+.app-header::after {
+  content:"";
+  position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(24,215,255,.72),transparent);
+  pointer-events:none;
+}
+.brand { color:#fff; text-shadow:0 0 20px rgba(24,215,255,.12); }
+.brand span:last-child {color:#18d7ff;}
+.brand-mark {color:#18d7ff;filter:drop-shadow(0 0 7px rgba(24,215,255,.4));}
+.header-info {color:#b8efff;}
+.header-info strong {color:#fff;}
+.icon-button {color:#8feaff;border-color:rgba(24,215,255,.13);}
+.icon-button:hover {background:rgba(24,215,255,.13);}
+button:focus-visible,input:focus-visible,select:focus-visible {
+  outline:3px solid var(--focus);
+  outline-offset:3px;
+}
+/* Phase contrast: avoid relying on colour alone — text still states the phase. */
+.phase-panel {
+  --phase-ink:#09213b;
+  --phase-track:rgba(9,33,59,.18);
+  --phase-fill:#09213b;
+  color:var(--phase-ink);
+  background:#f0b35c;
+  transition:background-color .2s ease,color .2s ease;
+}
+.phase-panel[data-phase="prep"] {
+  --phase-ink:#09213b;
+  --phase-track:rgba(9,33,59,.18);
+  --phase-fill:#09213b;
+  background:
+    radial-gradient(42rem 25rem at 45% 0%,rgba(255,255,255,.20),transparent 72%),
+    linear-gradient(155deg,#f5c77e,#f0b35c 68%,#e2a552);
+}
+.phase-panel[data-phase="work"] {
+  --phase-ink:#061c35;
+  --phase-track:rgba(6,28,53,.18);
+  --phase-fill:#061c35;
+  background:
+    radial-gradient(42rem 25rem at 46% 0%,rgba(255,255,255,.3),transparent 71%),
+    linear-gradient(150deg,#83edff,#18d7ff 64%,#09b9e7);
+}
+.phase-panel[data-phase="rest"] {
+  --phase-ink:#fff;
+  --phase-track:rgba(255,255,255,.25);
+  --phase-fill:#fff;
+  background:
+    radial-gradient(39rem 27rem at 48% 0%,rgba(195,228,255,.14),transparent 70%),
+    linear-gradient(153deg,#427cb7,#356fa7 63%,#24598e);
+}
+.phase-panel[data-phase="cycleRest"] {
+  --phase-ink:#fff;
+  --phase-track:rgba(255,255,255,.25);
+  --phase-fill:#fff;
+  background:linear-gradient(145deg,#6b86c5,#4b62a8 76%,#3d528f);
+}
+.phase-panel[data-phase="cooldown"] {
+  --phase-ink:#09213b;
+  --phase-track:rgba(9,33,59,.16);
+  --phase-fill:#09213b;
+  background:linear-gradient(145deg,#d2eafa,#9ac8ee);
+}
+.phase-panel[data-phase="done"] {
+  --phase-ink:#072039;
+  --phase-track:rgba(7,32,57,.2);
+  --phase-fill:#072039;
+  background:linear-gradient(145deg,#90f0f7,#3fc9d9);
+}
+.phase-label {letter-spacing:.035em;}
+.phase-time {letter-spacing:-.035em; font-variant-numeric:tabular-nums;}
+.phase-bottom>span {color:var(--phase-ink);}
+.progress-track {background:var(--phase-track);height:8px;}
+.progress-track span {background:var(--phase-fill);}
+.next-panel {
+  background:linear-gradient(90deg,#0c2643,#113355,#0c2643);
+  border-top:1px solid rgba(255,255,255,.1);
+  border-bottom:1px solid rgba(24,215,255,.13);
+  color:#e9f6ff;
+}
+.next-panel strong {color:#fff;}
+.dashboard {
+  background:linear-gradient(180deg,#0b1e35,#081729);
+  border-bottom:1px solid rgba(24,215,255,.08);
+}
+.dashboard-count strong {color:#18d7ff;}
+.dashboard-count.right strong {color:#9ccfff;}
+.dashboard-count span {color:#d8e7f6;}
+.play-button {
+  color:#061b34;
+  background:linear-gradient(135deg,#68eaff,#10c5ea);
+  border:5px solid #18d7ff;
+  box-shadow:0 0 0 6px rgba(24,215,255,.1),inset 0 0 0 3px #07334d,0 12px 36px rgba(24,215,255,.12);
+}
+.play-button.is-running {
+  background:linear-gradient(135deg,#68eaff,#10c5ea);
+  border-color:#18d7ff;
+}
+.play-container>strong {color:#91eaff;}
+.text-action {color:#9eb6cc;}
+.program-actions {background:#081729;}
+.outline-button {
+  background:#103255;
+  color:#e9f7ff;
+  border-color:rgba(24,215,255,.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.outline-button:hover {background:#16436d;border-color:rgba(24,215,255,.5);}
+.bottom-nav {
+  background:linear-gradient(180deg,#0b1c32,#071426);
+  border-top:1px solid rgba(24,215,255,.2);
+}
+.nav-button {color:#b4c8dd;}
+.nav-button.is-selected {color:#9aeeff;background:#12385d;box-shadow:inset 0 0 0 1px rgba(24,215,255,.22);}
+.nav-button:hover {color:#fff;background:rgba(24,215,255,.09);}
+.stopwatch-face {
+  background:linear-gradient(150deg,#79e9fc,#18d7ff 65%,#0bb7df);
+  color:#072039;
+}
+.preset-card {background:linear-gradient(145deg,#0e2949,#0b2039);border-color:var(--border);}
+.preset-card-actions button {background:#1c476f;}
+.preset-card-actions button:first-child {background:#18d7ff;color:#061b34;}
+.sheet-dialog,.small-dialog {
+  background:#091b31;
+  border-color:rgba(24,215,255,.28);
+  box-shadow:0 24px 80px rgba(0,6,15,.75);
+}
+.sheet-heading {background:#0b203a;}
+.sheet-heading h2 {color:#eaf8ff;}
+.save-button {color:#4ee5ff;}
+.config-field input,.setting select,.save-name input {
+  background:#102f51;
+  border-color:rgba(142,198,238,.28);
+  color:#fff;
+}
+.setting input[type=checkbox],.setting input[type=range] {accent-color:#18d7ff;}
+.setting select {color:#91eaff;}
+.duration-preview strong {color:#8feaff;}
+.solid-button {background:#18d7ff;color:#061b34;}
+.settings-note a {color:#8feaff;}
+@media(min-width:700px) {
+  .app-shell {border-left:1px solid rgba(24,215,255,.19);border-right:1px solid rgba(24,215,255,.19);}
+}
+@media(prefers-reduced-motion:reduce) {
+  .phase-panel {transition:none;}
+}

@@ -28,13 +28,13 @@
   let elapsedMs = 0, startedAt = 0, running = false, finished = false, lastSegmentIndex = -1, lastCountSound = '';
   let clockHandle = null, audioCtx = null, wakeLock = null;
   let stopwatchMs = 0, stopwatchStartedAt = 0, stopwatchRunning = false, lastLapMs = 0, laps = [];
-  const COLORS = { prep: '#fffa71', work: '#9af66a', rest: '#ff5a50', cycleRest: '#58c0ed', cooldown: '#58c0ed', done: '#9af66a' };
+  const COLORS = { prep: '#f0b35c', work: '#18d7ff', rest: '#356fa7', cycleRest: '#5b75b6', cooldown: '#9ac8ee', done: '#3fc9d9' };
   const labels = () => ({ prep: t('phasePrepare'), work: t('phaseWork'), rest: t('phaseRest'), cycleRest: t('phaseCycleRest'), cooldown: t('phaseCooldown'), done: t('phaseDone') });
   const audioConstructor = globalThis.AudioContext || globalThis.webkitAudioContext;
   const clock = () => performance.now();
   function timelineElapsed() { return running ? Math.min(plan.totalMs, elapsedMs + clock() - startedAt) : elapsedMs; }
   function stopwatchElapsed() { return stopwatchRunning ? stopwatchMs + clock() - stopwatchStartedAt : stopwatchMs; }
-  function setTheme(kind) { $('phasePanel').style.backgroundColor = COLORS[kind]; }
+  function setTheme(kind) { $('phasePanel').dataset.phase = kind; }
   function announcement(msg) { $('liveAnnouncement').textContent = msg; }
   function renderTimer(triggerEvents = false) {
     const state = Core.locate(plan, timelineElapsed());
