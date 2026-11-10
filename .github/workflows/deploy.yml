@@ -28,7 +28,10 @@ jobs:
           node-version: '22'
 
       - name: Run tests
-        run: node --test tests/*.cjs
+        run: |
+          touch .nojekyll
+          node --test tests/*.cjs
+
 
       - name: Prepare site
         run: |
