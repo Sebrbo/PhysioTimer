@@ -28,15 +28,12 @@ jobs:
           node-version: '22'
 
       - name: Run tests
-        run: |
-          touch .nojekyll
-          node --test tests/*.cjs
-
+        run: run: node --test tests/*.cjs
 
       - name: Prepare site
-        run: |
-          touch .nojekyll
-          node scripts/build-site.mjs
+        env:
+          BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: node scripts/build-site.mjs
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
