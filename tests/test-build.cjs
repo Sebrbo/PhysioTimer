@@ -1,36 +1,107 @@
-/* Build output: version is generated from the Actions run number. */
+
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { mkdtempSync, readFileSync, rmSync, existsSync } = require('node:fs');
+
+const {
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  existsSync
+} = require('node:fs');
+
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const { execFileSync } = require('node:child_process');
+
 const root = join(__dirname, '..');
 
-test('initial deployment exposes 0.4.1 and an isolated PWA cache', () => {
-  const output = mkdtempSync(join(tmpdir(), 'physiotimer-build-'));
+const { version } = JSON.parse(
+  readFileSync(join(root, 'version.json'), 'utf8')
+);
+
+function build(buildId) {
+  const folder = mkdtempSync(
+    join(tmpdir(), 'physiotimer-build-')
+  );
+
+  const site = join(folder, 'site');
+
+  execFileSync(
+    process.execPath,
+    ['scripts/build-site.mjs'],
+    {
+      cwd: root,
+      env: {
+        ...process.env,
+        BUILD_ID: buildId,
+        OUTPUT_DIR: site
+      }
+    }
+  );
+
+  return {
+    folder,
+    site,
+    html: readFileSync(join(site, 'index.html'), 'utf8'),
+    sw: readFileSync(join(site, 'service-worker.js'), 'utf8')
+  };
+}
+
+test('Product version is read from version.json', () => {
+  const result = build('test-1');
+
   try {
-    execFileSync(process.execPath, ['scripts/build-site.mjs'], { cwd: root, env: { ...process.env, BUILD_NUMBER: '1', OUTPUT_DIR: join(output, 'site') } });
-    const html = readFileSync(join(output, 'site/index.html'), 'utf8');
-    const sw = readFileSync(join(output, 'site/service-worker.js'), 'utf8');
-    assert.match(html, /name="app-version" content="0\.4\.1"/);
-    assert.match(html, /id="appVersion">0\.4\.1<\/strong>/);
-    assert.match(html, /style\.css\?v=0\.4\.1/);
-    assert.match(sw, /CACHE_NAME = 'physiotimer-v0\.4\.1'/);
-    assert.match(sw, /app\.js\?v=0\.4\.1/);
-    assert.ok(existsSync(join(output,'site/js/qr.js')));
-    assert.ok(existsSync(join(output,'site/icons/icon-192.png')));
-  } finally { rmSync(output, { recursive: true, force: true }); }
+    assert.ok(
+      result.html.includes(
+        `name="app-version" content="${version}"`
+      )
+    );
+
+    assert.ok(
+      result.html.includes(
+        `id="appVersion">${version}</strong>`
+      )
+    );
+
+    assert.ok(existsSync(join(result.site, '.nojekyll')));
+    assert.ok(existsSync(join(result.site, 'js/qr.js')));
+  } finally {
+    rmSync(result.folder, { recursive: true, force: true });
+  }
 });
 
-test('later deployment automatically increments version and asset cache', () => {
-  const output = mkdtempSync(join(tmpdir(), 'physiotimer-build-'));
+test('New deployments refresh cache without changing version', () => {
+  const first = build('test-1');
+  const second = build('test-2');
+
   try {
-    execFileSync(process.execPath, ['scripts/build-site.mjs'], { cwd: root, env: { ...process.env, BUILD_NUMBER: '3', OUTPUT_DIR: join(output, 'site') } });
-    const html = readFileSync(join(output, 'site/index.html'), 'utf8');
-    const sw = readFileSync(join(output, 'site/service-worker.js'), 'utf8');
-    assert.match(html, /name="app-version" content="0\.4\.3"/);
-    assert.match(sw, /CACHE_NAME = 'physiotimer-v0\.4\.3'/);
-    assert.doesNotMatch(html, /\?v=0\.4\.1/);
-  } finally { rmSync(output, { recursive: true, force: true }); }
+    assert.ok(
+      first.html.includes(`style.css?v=${version}-test-1`)
+    );
+
+    assert.ok(
+      second.html.includes(`style.css?v=${version}-test-2`)
+    );
+
+    assert.ok(
+      first.sw.includes(
+        `CACHE_NAME = 'physiotimer-v${version}-test-1'`
+      )
+    );
+
+    assert.ok(
+      second.sw.includes(
+        `CACHE_NAME = 'physiotimer-v${version}-test-2'`
+      )
+    );
+
+    assert.ok(
+      second.html.includes(
+        `name="app-version" content="${version}"`
+      )
+    );
+  } finally {
+    rmSync(first.folder, { recursive: true, force: true });
+    rmSync(second.folder, { recursive: true, force: true });
+  }
 });
