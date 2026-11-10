@@ -310,3 +310,10 @@ button:focus-visible,input:focus-visible,select:focus-visible {
   .share-session-summary div { padding: 6px 9px; }
   .share-session-summary { margin-bottom: 10px; }
 }
+
+/* 0.4.1: accessible audio test and published version at the bottom of Settings. */
+.sound-test-row { padding: 14px 0 17px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.sound-test-row .outline-button { min-height: 42px; flex-shrink: 0; border-color: rgba(24,215,255,.42); color: #b0edfb; }
+.sound-test-row p { color: var(--muted); font-size: 12px; line-height: 1.4; margin: 0; flex: 1 1 180px; }
+.app-version { text-align: center; border-top: 1px solid rgba(143,234,255,.13); margin: 18px 0 0; padding: 16px 0 2px; color: #a6c6dc; font-size: 12px; letter-spacing: .04em; }
+.app-version strong { color: #b8eafa; font-variant-numeric: tabular-nums; }

@@ -48,3 +48,12 @@ The 5 time settings consist of two named inputs per field: `${field}Min` and `${
 - QR must be generated locally without external network calls.
 - A patient starts with an explicit click, which unlocks audio on mobile browsers.
 - Run `node --test tests/*.cjs` including share link tests.
+
+
+## Release automation (from v0.4.1)
+- GitHub Actions `deploy.yml` runs tests then `node scripts/build-site.mjs`.
+- Build derives `0.4.<GITHUB_RUN_NUMBER>`, starting at `0.4.1` for the first workflow run.
+- No version update commits: deployment copies static assets to `_site` and embeds the version in HTML, CSS/JS query parameters, and the service worker cache.
+- GitHub Pages must use **GitHub Actions** as the publishing source (not branch).
+- Preserve `meta[name="app-version"]` and `#appVersion` in Settings.
+- Test sound uses `navigator.audioSession.type='playback'` where available; avoid audio promises that block timer UI.

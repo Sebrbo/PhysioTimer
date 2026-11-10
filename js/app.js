@@ -84,15 +84,27 @@
     try { wakeLock = await navigator.wakeLock.request('screen'); } catch { /* Permission or compatibility */ }
   }
   function releaseWake() { if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; } }
-  function unlockAudio() {
-    if (!data.settings.sound || !audioConstructor) return;
-    try { audioCtx ||= new audioConstructor(); if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {}); } catch { /* Not available */ }
-  }
-  function tone(freq, duration, bell = false) {
-    if (!data.settings.sound || !audioConstructor || !data.settings.volume) return;
+  // iOS 17+: playback allows Web Audio to remain audible with the silent switch on.
+  // This is progressive enhancement: older browsers keep their existing behavior.
+  function configureAudioPlayback() {
     try {
-      unlockAudio();
-      if (!audioCtx || audioCtx.state !== 'running') return;
+      if (navigator.audioSession) navigator.audioSession.type = 'playback';
+    } catch { /* Experimental API, not supported everywhere. */ }
+  }
+  async function unlockAudio() {
+    if (!data.settings.sound || !audioConstructor) return false;
+    try {
+      // Set the playback category before creating / resuming an AudioContext.
+      configureAudioPlayback();
+      audioCtx ||= new audioConstructor();
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
+      return audioCtx.state === 'running';
+    } catch { return false; }
+  }
+  async function tone(freq, duration, bell = false) {
+    if (!data.settings.sound || !audioConstructor || !Number(data.settings.volume)) return false;
+    if (!await unlockAudio()) return false;
+    try {
       const now = audioCtx.currentTime;
       const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
       osc.type = bell || data.settings.soundType === 'bell' ? 'sine' : 'square';
@@ -102,7 +114,15 @@
       gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
       osc.connect(gain).connect(audioCtx.destination);
       osc.start(now); osc.stop(now + duration);
-    } catch { /* Keep silent on unsupported browsers. */ }
+      return true;
+    } catch { return false; }
+  }
+  async function testSound() {
+    const feedback = $('testSoundFeedback');
+    if (!data.settings.sound) { feedback.textContent = t('testSoundDisabled'); return; }
+    if (!Number(data.settings.volume)) { feedback.textContent = t('testSoundVolumeZero'); return; }
+    const ok = await tone(880, 0.4);
+    feedback.textContent = t(ok ? 'testSoundTriggered' : 'testSoundUnavailable');
   }
   function notifyPhase(kind) {
     tone(kind === 'rest' ? 420 : kind === 'work' ? 880 : 620, .32, kind === 'done');
@@ -204,6 +224,9 @@
     } catch (err) { $('configError').textContent = I18n.language()==='en' ? t('invalidConfig') : (err.message || t('invalidConfig')); }
   }
   function renderSettings() {
+    const version = document.querySelector('meta[name="app-version"]')?.content || '0.4.1';
+    $('appVersion').textContent = version;
+    $('testSoundFeedback').textContent = '';
     const s = data.settings;
     $('settingSound').checked = s.sound; $('settingVolume').value = s.volume; $('settingSoundType').value = s.soundType;
     $('settingCountdown').checked = s.countdown; $('settingVoice').checked = s.voice; $('settingVibration').checked = s.vibration; $('settingWakeLock').checked = s.wakeLock; $('settingLanguage').value = s.language || 'auto';
@@ -213,7 +236,7 @@
       sound: $('settingSound').checked, volume: Number($('settingVolume').value), soundType: $('settingSoundType').value,
       countdown: $('settingCountdown').checked, voice: $('settingVoice').checked, vibration: $('settingVibration').checked, wakeLock: $('settingWakeLock').checked, language: $('settingLanguage').value
     };
-    saveData(); if (!data.settings.wakeLock) releaseWake();
+    saveData(); $('testSoundFeedback').textContent = ''; if (!data.settings.wakeLock) releaseWake();
     I18n.setLang(data.settings.language); I18n.translatePage();
     if (currentMode === 'stopwatch') $('modeTitle').textContent = t('navStopwatch');
     renderTimer(); renderStopwatch(); if (currentMode === 'presets') renderPresets();
@@ -381,6 +404,7 @@
     $('configForm').addEventListener('input', configPreview);
     $('saveForm').addEventListener('submit', savePreset);
     $('settingsButton').addEventListener('click', () => { renderSettings(); openDialog('settingsDialog'); });
+    $('testSoundButton').addEventListener('click', testSound);
     ['settingSound','settingVolume','settingSoundType','settingCountdown','settingVoice','settingVibration','settingWakeLock','settingLanguage'].forEach(id=>$(id).addEventListener('change',setSettings));
     document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click',() => closeDialog(button.dataset.close)));
     document.querySelectorAll('.nav-button').forEach(button=>button.addEventListener('click',()=>setMode(button.dataset.mode)));

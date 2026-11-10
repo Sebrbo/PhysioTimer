@@ -21,13 +21,10 @@ PhysioTimer est une application web gratuite pour organiser des séances alterna
 - **Affichage lisible** : grand compte à rebours, durée totale restante, phase suivante et progression. Les phases sont distinguées par des couleurs : ambre (préparation), cyan (effort), violet (repos).
 - **Commandes et alertes** : pause/reprise, réinitialisation, plein écran, signaux sonores, annonces vocales et vibrations lorsque le navigateur le permet.
 - **Programmes personnalisés** : sauvegarde locale des réglages pour retrouver ses séances.
-- **Partage par QR code** : un lien transmet les paramètres de la séance, sans compte ni serveur.
 
 ### Utilisation
 
 Ouvrez [l’application](https://sebrbo.github.io/PhysioTimer/), choisissez **Tabata**, **Rounds** ou **Chronomètre**, puis ajustez les paramètres et démarrez la séance. Les durées se règlent en minutes et secondes (`MM:SS`).
-
-Pour partager une séance, configurez ses intervalles puis cliquez sur **Partager**. Le QR code s’affiche sur l’écran ; le patient peut le scanner pour ouvrir le programme et appuyer sur **Démarrer la séance**. Il est aussi possible de copier le lien ou de télécharger le QR code. Le lien ne contient que les paramètres temporels et les nombres de rounds/cycles : n’y ajoutez pas de données personnelles. Une séance reçue n’écrase pas les réglages locaux et n’est enregistrée que sur demande.
 
 PhysioTimer est une **Progressive Web App (PWA)** : après un premier chargement, elle peut être installée sur un appareil compatible et utilisée hors connexion. Les programmes et préférences restent enregistrés dans le navigateur utilisé ; ils ne sont pas synchronisés entre appareils.
 
@@ -51,13 +48,10 @@ PhysioTimer is a free web app for structuring workouts with alternating work and
 - **Clear display**: large countdown, overall time remaining, upcoming phase and progress. Phases use distinct colors: amber (preparation), cyan (work) and purple (rest).
 - **Controls and cues**: pause/resume, reset, fullscreen, audible signals, voice announcements and vibration where supported.
 - **Saved presets**: store session settings locally for later use.
-- **QR code sharing**: a short link transfers session settings without an account or server.
 
 ### Getting started
 
 Open the [app](https://sebrbo.github.io/PhysioTimer/), select **Tabata**, **Rounds** or **Stopwatch**, adjust the settings and start your session. Durations are entered as minutes and seconds (`MM:SS`).
-
-To share a session, configure its intervals and select **Share**. The QR code lets another person open the session on a phone and tap **Start session**. You can also copy the link or download the QR code. Links contain timing and round/cycle settings only; do not include personal information. Shared sessions do not overwrite or automatically save local settings.
 
 PhysioTimer is a **Progressive Web App (PWA)**. After its first load, it can be installed on compatible devices and used offline. Presets and preferences are stored in the current browser and are not synchronized across devices.
 
@@ -87,12 +81,6 @@ Pour exécuter les tests du moteur / To run the timer engine tests:
 node --test tests/test-core.cjs
 ```
 
-### Génération des QR codes / QR code generation
-
-Les QR codes sont générés localement dans le navigateur, sans service externe. La bibliothèque QR utilisée est sous licence MIT (voir [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)).
-
-QR codes are generated locally in the browser without contacting an external service. The embedded QR library is MIT-licensed (see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)).
-
 ## Licence / License
 
 - **Code / Source code:** [PolyForm Noncommercial 1.0.0](LICENCE).
@@ -103,3 +91,35 @@ La consultation, la modification et le partage sont autorisés dans les limites 
 Viewing, modifying and sharing are permitted under the license terms, **for noncommercial purposes only**. This is a *source-available* project, not OSI-approved open source software.
 
 © 2026 Sebrbo and contributors.
+
+
+## Publication et versions / Deployment and versioning
+
+À partir de **0.4.1**, GitHub Actions prépare et publie le site à chaque push sur `main`.
+Le numéro affiché dans **Paramètres** est généré automatiquement sous la forme
+`0.4.<numéro d'exécution du workflow>` : 0.4.1 pour la première publication,
+puis 0.4.2, 0.4.3, etc. Le cache PWA et les URL CSS/JS sont actualisés à chaque build.
+
+**Configuration unique :** ouvrir **Settings → Pages → Build and deployment → Source**
+et sélectionner **GitHub Actions**. Le fichier `.github/workflows/deploy.yml`
+lance les tests et publie `_site`. Si GitHub Pages reste en mode « Deploy from a branch »,
+la version 0.4.1 reste utilisable, mais la numérotation automatique ne fonctionnera pas.
+
+Starting with **0.4.1**, the GitHub Actions workflow builds and deploys the site on each
+push to `main`. The published version is `0.4.<workflow run number>`, starting at
+**0.4.1**, and is shown at the bottom of **Settings**. The PWA cache and asset URLs are
+also refreshed. Configure **Settings → Pages → Source → GitHub Actions** once.
+
+### Audio sur iPhone / iPhone audio
+
+PhysioTimer tente d'utiliser `navigator.audioSession.type = 'playback'` avant les bips.
+Sur Safari iOS compatible (iOS 17 et versions ultérieures), cela peut permettre
+les signaux en mode silencieux. Le bouton **Tester le son** permet un contrôle sur
+l'appareil réel. Le volume multimédia doit rester audible. L'audio en arrière-plan
+ou avec l'écran verrouillé n'est pas garanti. Ce mode peut interrompre une musique
+jouée par une autre application.
+
+Where supported (including Safari on iOS 17+), PhysioTimer uses the experimental
+`navigator.audioSession.type = 'playback'` before playing its beeps. Use **Test sound**
+on the actual iPhone. Media volume must be audible; locked-screen/background audio
+is not guaranteed. Playback sessions may interrupt other media.

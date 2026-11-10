@@ -1,9 +1,9 @@
 /* PhysioTimer offline support. Increment CACHE_NAME when changing app assets. */
 'use strict';
-const CACHE_NAME = 'physiotimer-v6';
+const CACHE_NAME = 'physiotimer-v0.4.1';
 const APP_SHELL = [
-  './', './index.html', './css/style.css?v=6', './js/i18n.js?v=3',
-  './js/core.js?v=2', './js/share.js?v=1', './js/qr.js?v=1', './js/app.js?v=6', './manifest.webmanifest',
+  './', './index.html', './css/style.css?v=0.4.1', './js/i18n.js?v=0.4.1',
+  './js/core.js?v=0.4.1', './js/share.js?v=0.4.1', './js/qr.js?v=0.4.1', './js/app.js?v=0.4.1', './manifest.webmanifest',
   './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'
 ];
 self.addEventListener('install', event => {
