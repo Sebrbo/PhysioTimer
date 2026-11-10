@@ -3,6 +3,8 @@
   'use strict';
   const Core = globalThis.PhysioTimerCore;
   const I18n = globalThis.PhysioTimerI18n;
+  const Share = globalThis.PhysioTimerShare;
+  const Qr = globalThis.PhysioTimerQr;
   const t = (key, params) => I18n.t(key, params);
   const $ = id => document.getElementById(id);
   const DEFAULT_CONFIGS = {
@@ -24,6 +26,8 @@
   I18n.setLang(data.settings.language);
   const saveData = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch { /* Storage may be disabled. */ } };
   let currentMode = 'tabata';
+  let sharedProgram = null; // URL sessions stay in memory until the user explicitly saves them.
+  let activeShareSvg = ''; 
   let plan = Core.buildSegments(data.configs.tabata, 'tabata');
   let elapsedMs = 0, startedAt = 0, running = false, finished = false, lastSegmentIndex = -1, lastCountSound = '';
   let clockHandle = null, audioCtx = null, wakeLock = null;
@@ -126,9 +130,20 @@
     running = false; finished = false; elapsedMs = 0; lastSegmentIndex = -1; lastCountSound = '';
     stopClock(); releaseWake(); if ('speechSynthesis' in globalThis) speechSynthesis.cancel(); renderTimer();
   }
-  function currentConfig() { return data.configs[currentMode]; }
+  function currentConfig() {
+    return sharedProgram && sharedProgram.mode === currentMode ? sharedProgram.config : data.configs[currentMode];
+  }
+  function discardSharedSession() {
+    if (!sharedProgram) return;
+    sharedProgram = null;
+    $('sharedNotice').hidden = true;
+    const url = new URL(location.href);
+    url.searchParams.delete('pt');
+    try { history.replaceState(null, '', url.pathname + url.search + url.hash); } catch { /* Some embedded or opaque-origin previews disallow history edits. */ }
+  }
   function setMode(mode) {
     if (mode === currentMode) return; // Keep ongoing session when current tab is tapped again.
+    discardSharedSession();
     if (running) pauseTimer();
     if (stopwatchRunning) pauseStopwatch();
     currentMode = mode;
@@ -182,8 +197,10 @@
   function saveConfig(event) {
     event.preventDefault();
     try {
-      data.configs[currentMode] = getFormConfig();
-      saveData(); plan = Core.buildSegments(currentConfig(), currentMode); resetTimer(); closeDialog('configDialog');
+      const updated = getFormConfig();
+      if (sharedProgram && sharedProgram.mode === currentMode) sharedProgram.config = updated;
+      else { data.configs[currentMode] = updated; saveData(); }
+      plan = Core.buildSegments(currentConfig(), currentMode); resetTimer(); closeDialog('configDialog');
     } catch (err) { $('configError').textContent = I18n.language()==='en' ? t('invalidConfig') : (err.message || t('invalidConfig')); }
   }
   function renderSettings() {
@@ -213,6 +230,88 @@
     data.presets.unshift({ id: globalThis.crypto?.randomUUID?.() || String(Date.now()), name, mode: currentMode, config: { ...currentConfig() } });
     data.presets = data.presets.slice(0, 60); saveData(); closeDialog('saveDialog'); announcement(t('presetSaved'));
   }
+  function sessionSummary(mode, config) {
+    const c = Core.validateConfig(config, mode);
+    const d = Core.formatTime;
+    const details = [
+      [t('shareMode'), mode.toUpperCase()],
+      [t('shareWork'), d(c.work)],
+      [t('shareRest'), d(c.rest)],
+      [t('shareRounds'), String(c.rounds)]
+    ];
+    if (mode === 'tabata') details.push([t('shareCycles'), String(c.cycles)]);
+    details.push([t('shareTotal'), d(Core.buildSegments(c, mode).totalMs / 1000)]);
+    return details;
+  }
+  function fillSummary(container, mode, config) {
+    container.replaceChildren();
+    for (const [label, value] of sessionSummary(mode, config)) {
+      const row = document.createElement('div');
+      const key = document.createElement('span'); key.textContent = label;
+      const val = document.createElement('strong'); val.textContent = value;
+      row.append(key, val); container.append(row);
+    }
+  }
+  function openShare(mode, config) {
+    // The link contains only numeric timing data. Preset names never appear in it.
+    try {
+      const url = Share.makeUrl(mode, config, location.href);
+      activeShareSvg = Qr.createSvg(url);
+      $('shareQr').innerHTML = activeShareSvg;
+      $('shareUrl').value = url;
+      $('shareStatus').textContent = '';
+      fillSummary($('shareSummary'), mode, config);
+      openDialog('shareDialog');
+    } catch { announcement(t('shareError')); }
+  }
+  async function copyShareUrl() {
+    const value = $('shareUrl').value;
+    let copied = false;
+    try {
+      if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(value); copied = true; }
+    } catch { /* Clipboard permission denied; fall back to selecting text. */ }
+    if (!copied) {
+      const input = $('shareUrl'); input.focus(); input.select();
+      try { copied = document.execCommand('copy'); } catch { /* Manual copy remains possible. */ }
+    }
+    $('shareStatus').textContent = copied ? t('linkCopied') : t('manualCopy');
+  }
+  function downloadShareQr() {
+    if (!activeShareSvg) return;
+    const file = new Blob([activeShareSvg], { type: 'image/svg+xml;charset=utf-8' });
+    const fileUrl = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = fileUrl; a.download = 'PhysioTimer-QR.svg';
+    document.body.appendChild(a); a.click(); a.remove();
+    // Revocation is delayed so Safari has time to complete the download.
+    setTimeout(() => URL.revokeObjectURL(fileUrl), 3000);
+  }
+  function receiveSharedProgram() {
+    const url = new URL(location.href);
+    if (!url.searchParams.has('pt')) return;
+    const incoming = Share.decode(url.searchParams.get('pt'));
+    if (!incoming) {
+      $('receivedTitle').textContent = t('invalidSharedLink');
+      $('receivedIntro').textContent = t('invalidSharedHelp');
+      $('receivedSummary').hidden = true;
+      $('receivedPrivacy').hidden = true;
+      $('receivedStartButton').hidden = true;
+      $('receivedViewButton').textContent = t('close');
+      openDialog('receivedDialog');
+      return;
+    }
+    if (incoming.mode !== currentMode) setMode(incoming.mode);
+    sharedProgram = { mode: incoming.mode, config: { ...incoming.config } };
+    plan = Core.buildSegments(currentConfig(), currentMode);
+    resetTimer();
+    $('sharedNotice').hidden = false;
+    fillSummary($('receivedSummary'), incoming.mode, incoming.config);
+    openDialog('receivedDialog');
+  }
+  function startSharedSession() {
+    closeDialog('receivedDialog');
+    startTimer(); // User click unlocks audio on mobile browsers.
+  }
   function renderPresets() {
     const list = $('presetsList'); list.replaceChildren();
     if (!data.presets.length) { const el = document.createElement('div'); el.className = 'preset-empty'; el.textContent = t('emptyPresets'); list.append(el); return; }
@@ -225,9 +324,12 @@
       const actions = document.createElement('div'); actions.className = 'preset-card-actions';
       const load = document.createElement('button'); load.type='button'; load.textContent=t('load'); load.setAttribute('aria-label',t('loadPreset', {name:entry.name}));
       load.addEventListener('click', () => { const mode = entry.mode === 'rounds' ? 'rounds' : 'tabata'; data.configs[mode] = c; saveData(); setMode(mode); });
+      const share = document.createElement('button'); share.type='button'; share.textContent=t('share'); share.className='preset-share';
+      share.setAttribute('aria-label',t('sharePreset', {name:entry.name}));
+      share.addEventListener('click', () => openShare(entry.mode, c));
       const remove = document.createElement('button'); remove.type='button'; remove.textContent='✕'; remove.setAttribute('aria-label',t('deletePreset', {name:entry.name}));
       remove.addEventListener('click', () => { if (!confirm(t('confirmDelete', {name:entry.name}))) return; data.presets=data.presets.filter(p=>p.id!==entry.id); saveData(); renderPresets(); });
-      actions.append(load,remove); card.append(info,actions); list.append(card);
+      actions.append(load,share,remove); card.append(info,actions); list.append(card);
     }
   }
   function formatStopwatch(ms) {
@@ -249,6 +351,19 @@
     $('resetButton').addEventListener('click', resetTimer);
     $('editProgramButton').addEventListener('click', editConfig);
     $('savePresetButton').addEventListener('click', openSave);
+    $('shareProgramButton').addEventListener('click', () => openShare(currentMode, currentConfig()));
+    $('saveSharedButton').addEventListener('click', openSave);
+    $('copyShareButton').addEventListener('click', copyShareUrl);
+    $('downloadQrButton').addEventListener('click', downloadShareQr);
+    $('receivedViewButton').addEventListener('click', () => {
+      closeDialog('receivedDialog');
+      if (!sharedProgram) {
+        const url = new URL(location.href);
+        url.searchParams.delete('pt');
+        try { history.replaceState(null, '', url.pathname + url.search + url.hash); } catch { /* Preview frame. */ }
+      }
+    });
+    $('receivedStartButton').addEventListener('click', startSharedSession);
     $('configForm').addEventListener('submit', saveConfig);
     // Select an entire number when tapped; normalize to two digits on leaving the field.
     document.querySelectorAll('.duration-entry input').forEach(input => {
@@ -287,6 +402,6 @@
       else if(currentMode==='stopwatch') stopwatchRunning?pauseStopwatch():startStopwatch();
     });
   }
-  I18n.translatePage(); registerEvents(); renderTimer(); renderStopwatch();
+  I18n.translatePage(); registerEvents(); renderTimer(); renderStopwatch(); receiveSharedProgram();
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
 })();

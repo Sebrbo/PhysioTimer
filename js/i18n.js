@@ -4,6 +4,17 @@
   'use strict';
   const strings = {
     fr: {
+      qrAlt: 'QR code du programme',
+      share: 'Partager', shareTitle: 'Partager une séance',
+      shareInstructions: 'Le patient scanne ce code pour ouvrir la séance sur son téléphone.',
+      shareLink: 'Lien du programme', copyLink: 'Copier le lien', downloadQr: 'Télécharger le QR code',
+      sharePrivacy: "Le lien contient uniquement les durées et les rounds/cycles. Aucun nom ni donnée de santé n'est partagé.",
+      linkCopied: 'Lien copié', manualCopy: 'Sélectionnez le lien et copiez-le manuellement.', shareError: 'Impossible de générer le QR code.',
+      sharePreset: 'Partager {name}', shareMode: 'Mode', shareWork: 'Exercice', shareRest: 'Repos', shareRounds: 'Rounds', shareCycles: 'Cycles', shareTotal: 'Durée totale',
+      sharedNotice: 'Séance partagée · non enregistrée sur cet appareil', saveShared: 'Enregistrer',
+      receivedTitle: 'Programme reçu', receivedIntro: 'Voici la séance partagée avec vous. Vérifiez les paramètres avant de commencer.',
+      receivedPrivacy: "Ce programme ne remplace pas vos réglages enregistrés.", viewTimer: 'Voir le minuteur', startSession: 'Démarrer la séance',
+      invalidSharedLink: 'Lien de programme invalide', invalidSharedHelp: 'Ce lien ne contient pas de programme utilisable. Demandez un nouveau QR code.', close: 'Fermer',
       reset: '↻ Réinitialiser', configure: '⚙ Configurer', savePreset: '☆ Enregistrer',
       stopwatch: 'CHRONOMÈTRE', lap: 'Tour', resetStopwatch: 'Remettre à zéro', laps: 'Tours',
       myPresets: 'Mes programmes', myPresetsHint: 'Retrouve tes séances enregistrées sur cet appareil.',
@@ -38,6 +49,17 @@
       fullscreen: 'Mode plein écran', audioSettings: 'Réglages sonores'
     },
     en: {
+      qrAlt: 'Session QR code',
+      share: 'Share', shareTitle: 'Share a session',
+      shareInstructions: 'Scan this QR code to open the session on a phone.',
+      shareLink: 'Session link', copyLink: 'Copy link', downloadQr: 'Download QR code',
+      sharePrivacy: 'The link contains only timing and round/cycle settings. No names or health information are included.',
+      linkCopied: 'Link copied', manualCopy: 'Select and copy the link manually.', shareError: 'Unable to generate QR code.',
+      sharePreset: 'Share {name}', shareMode: 'Mode', shareWork: 'Work', shareRest: 'Rest', shareRounds: 'Rounds', shareCycles: 'Cycles', shareTotal: 'Total duration',
+      sharedNotice: 'Shared session · not saved on this device', saveShared: 'Save',
+      receivedTitle: 'Shared session', receivedIntro: 'This session has been shared with you. Review its settings before starting.',
+      receivedPrivacy: 'This session will not replace your saved settings.', viewTimer: 'View timer', startSession: 'Start session',
+      invalidSharedLink: 'Invalid session link', invalidSharedHelp: 'This link does not contain a usable session. Please request a new QR code.', close: 'Close',
       reset: '↻ Reset', configure: '⚙ Configure', savePreset: '☆ Save preset',
       stopwatch: 'STOPWATCH', lap: 'Lap', resetStopwatch: 'Reset', laps: 'Laps',
       myPresets: 'My workouts', myPresetsHint: 'Your saved sessions on this device.',
@@ -88,6 +110,7 @@
   }
   function translatePage() {
     for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
+    for (const el of document.querySelectorAll('[data-i18n-aria]')) el.setAttribute('aria-label', t(el.dataset.i18nAria));
     const fullscreen = document.getElementById('fullscreenButton');
     if (fullscreen) { fullscreen.title = t('fullscreen'); fullscreen.setAttribute('aria-label', t('fullscreen')); }
     const settings = document.getElementById('settingsButton');

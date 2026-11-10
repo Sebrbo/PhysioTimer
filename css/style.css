@@ -256,3 +256,57 @@ button:focus-visible,input:focus-visible,select:focus-visible {
   .duration-entry {width: 110px;min-width: 110px;padding:4px 5px;}
   .config-field .duration-entry input {width:39px;font-size:18px;}
 }
+
+/* v0.4.0 — Shareable sessions and local QR codes */
+.program-actions { flex-wrap: wrap; }
+.share-trigger { background: #0b5276; border-color: #188eb5; color: #e4fbff; }
+.share-trigger:hover { background: #09658c; }
+.shared-notice {
+  display: flex; gap: .6rem; align-items: center; justify-content: center;
+  flex-wrap: wrap; padding: .55rem 1rem;
+  background: #103656; border-bottom: 1px solid #24658a;
+  color: #cdeeff; font-size: .86rem; font-weight: 700;
+}
+.shared-notice[hidden] { display: none; }
+.shared-notice button { border: 1px solid #5bd9f3; background: transparent; color: #9eefff; border-radius: .5rem; padding: .3rem .6rem; font-size: .8rem; font-weight: 750; }
+.share-dialog { max-width: min(calc(100vw - 24px), 470px); }
+.share-sheet { padding: 22px clamp(16px,5vw,28px) 26px; }
+.share-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.share-sheet h2 { margin: 0; font-size: clamp(1.25rem,4vw,1.6rem); color: #f7faff; }
+.close-share { color: #a8b7c8; border: 1px solid #356083; width: 36px; height: 36px; border-radius: 100%; background: transparent; font-size: 1.5rem; line-height: 1; }
+.share-description { color: #aec8df; font-size: .94rem; margin: 12px 0 16px; line-height: 1.5; }
+.qr-box { background: #fff; border-radius: 15px; width: min(100%,256px); padding: 10px; margin: 12px auto 18px; box-shadow: 0 8px 32px #0005; }
+.qr-box svg { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.share-session-summary,.received-summary {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px;
+  margin: 0 0 18px;
+}
+.share-session-summary div,.received-summary div {
+  display: flex; flex-direction: column; gap: 3px; padding: 9px 12px;
+  background: #103153; border: 1px solid #1a4d71; border-radius: 9px;
+}
+.share-session-summary span,.received-summary span { color: #a8c8e4; font-size: .75rem; }
+.share-session-summary strong,.received-summary strong { color: #f9fcff; font-size: 1.04rem; font-variant-numeric: tabular-nums; }
+.share-url-label { display: block; margin: 6px 0; color: #c4dcf3; font-size: .85rem; font-weight: 700; }
+.share-url { width: 100%; min-width:0; background: #102f51; border: 1px solid #3a6687; border-radius: 10px; padding: 11px; color: white; font-size: .8rem; }
+.share-actions,.received-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+.share-actions button,.received-actions button { flex: 1 1 auto; min-height: 43px; font-size: .9rem; }
+.share-actions .solid-button,.received-actions .solid-button { background: #18d7ff; color: #051c33; border: 0; border-radius: 10px; padding: 10px 12px; font-weight: 800; }
+.share-feedback { min-height: 1.3em; color: #9eefff; font-size: .87rem; margin: 9px 0 0; }
+.share-privacy { color: #9fbbd3; font-size: .79rem; margin: 9px 0 0; line-height: 1.5; }
+.preset-card-actions .preset-share { background: #0c5982; color: #f7faff; }
+@media(max-width:440px){
+  .share-sheet { padding: 20px 16px 24px; }
+  .share-actions button { flex: 1 1 100%; }
+  .share-session-summary,.received-summary { gap: 6px; }
+  .preset-card { flex-wrap: wrap; }
+  .preset-card-actions { width: 100%; justify-content: flex-end; }
+}
+
+@media (max-height: 850px) and (max-width: 600px) {
+  .share-sheet { padding-top: 16px; padding-bottom: 16px; }
+  .qr-box { width: min(100%, 216px); margin: 8px auto 10px; padding: 8px; }
+  .share-description { margin: 8px 0 12px; }
+  .share-session-summary div { padding: 6px 9px; }
+  .share-session-summary { margin-bottom: 10px; }
+}

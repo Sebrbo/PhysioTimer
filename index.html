@@ -8,7 +8,7 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
-  <link rel="stylesheet" href="./css/style.css?v=5">
+  <link rel="stylesheet" href="./css/style.css?v=6">
   <title>PhysioTimer — Tabata & Rounds</title>
 </head>
 <body>
@@ -23,6 +23,10 @@
     </header>
 
     <main id="timerView" class="timer-view">
+      <div id="sharedNotice" class="shared-notice" hidden>
+        <span data-i18n="sharedNotice">Séance partagée · non enregistrée sur cet appareil</span>
+        <button type="button" id="saveSharedButton" data-i18n="saveShared">Enregistrer</button>
+      </div>
       <section class="phase-panel" id="phasePanel" data-phase="prep" aria-label="Compte à rebours de la phase">
         <div class="phase-label" id="phaseLabel">PRÉPARATION</div>
         <div class="phase-time" id="phaseTime" role="timer" aria-label="Temps restant dans la phase">00:05</div>
@@ -38,7 +42,7 @@
         </div>
         <div class="dashboard-count right"><strong id="cyclesLeft">1</strong><span id="cyclesCaption">CYCLES<br>RESTANTS</span></div>
       </section>
-      <div class="program-actions"><button type="button" id="editProgramButton" class="outline-button" data-i18n="configure">⚙ Configurer</button><button type="button" id="savePresetButton" class="outline-button" data-i18n="savePreset">☆ Enregistrer</button></div>
+      <div class="program-actions"><button type="button" id="editProgramButton" class="outline-button" data-i18n="configure">⚙ Configurer</button><button type="button" id="savePresetButton" class="outline-button" data-i18n="savePreset">☆ Enregistrer</button><button type="button" id="shareProgramButton" class="outline-button share-trigger" data-i18n="share">Partager</button></div>
     </main>
 
     <main id="stopwatchView" class="stopwatch-view" hidden>
@@ -79,9 +83,43 @@
   <p class="settings-note">© 2026 Sebrbo · <a href="https://github.com/Sebrbo/PhysioTimer" target="_blank" rel="noopener noreferrer">GitHub / Source</a> · <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/" target="_blank" rel="noopener noreferrer">PolyForm Noncommercial</a> · <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC 4.0</a></p></div></dialog>
 
   <dialog id="saveDialog" class="small-dialog"><form id="saveForm" method="dialog"><h2 data-i18n="saveProgramTitle">Enregistrer le programme</h2><label class="save-name"><span data-i18n="programName">Nom du programme</span><input id="presetName" type="text" maxlength="60" required placeholder="Ex. Renforcement cheville"></label><div class="dialog-footer"><button type="button" class="outline-button" data-close="saveDialog" data-i18n="cancel">Annuler</button><button type="submit" class="solid-button" data-i18n="save">Enregistrer</button></div></form></dialog>
+  <dialog id="shareDialog" class="small-dialog share-dialog" aria-labelledby="shareTitle">
+    <div class="share-sheet">
+      <div class="share-heading">
+        <h2 id="shareTitle" data-i18n="shareTitle">Partager une séance</h2>
+        <button type="button" class="close-share" data-close="shareDialog" data-i18n-aria="close" aria-label="Fermer">×</button>
+      </div>
+      <p class="share-description" data-i18n="shareInstructions">Le patient scanne ce code pour ouvrir la séance sur son téléphone.</p>
+      <div class="qr-box" id="shareQr" role="img" data-i18n-aria="qrAlt" aria-label="QR code du programme"></div>
+      <div class="share-session-summary" id="shareSummary"></div>
+      <label class="share-url-label" for="shareUrl" data-i18n="shareLink">Lien du programme</label>
+      <input type="url" id="shareUrl" class="share-url" readonly autocomplete="off" spellcheck="false">
+      <div class="share-actions">
+        <button type="button" id="copyShareButton" class="solid-button" data-i18n="copyLink">Copier le lien</button>
+        <button type="button" id="downloadQrButton" class="outline-button" data-i18n="downloadQr">Télécharger le QR code</button>
+      </div>
+      <p id="shareStatus" class="share-feedback" role="status" aria-live="polite"></p>
+      <p class="share-privacy" data-i18n="sharePrivacy">Le lien contient uniquement les durées et le nombre de rounds/cycles. Aucun nom ni donnée de santé n'est partagé.</p>
+    </div>
+  </dialog>
+
+  <dialog id="receivedDialog" class="small-dialog share-dialog" aria-labelledby="receivedTitle">
+    <div class="share-sheet">
+      <h2 id="receivedTitle" data-i18n="receivedTitle">Programme reçu</h2>
+      <p class="share-description" id="receivedIntro" data-i18n="receivedIntro">Voici la séance partagée avec vous. Vérifiez les paramètres avant de commencer.</p>
+      <div class="received-summary" id="receivedSummary"></div>
+      <p id="receivedPrivacy" class="share-privacy" data-i18n="receivedPrivacy">Cette séance ne remplace pas vos réglages enregistrés.</p>
+      <div class="received-actions">
+        <button type="button" id="receivedViewButton" class="outline-button" data-i18n="viewTimer">Voir le minuteur</button>
+        <button type="button" id="receivedStartButton" class="solid-button" data-i18n="startSession">Démarrer la séance</button>
+      </div>
+    </div>
+  </dialog>
   <div id="liveAnnouncement" class="sr-only" aria-live="polite"></div>
-  <script src="./js/i18n.js?v=2" defer></script>
+  <script src="./js/i18n.js?v=3" defer></script>
   <script src="./js/core.js?v=2" defer></script>
-  <script src="./js/app.js?v=5" defer></script>
+  <script src="./js/share.js?v=1" defer></script>
+  <script src="./js/qr.js?v=1" defer></script>
+  <script src="./js/app.js?v=6" defer></script>
 </body>
 </html>

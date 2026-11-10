@@ -21,10 +21,13 @@ PhysioTimer est une application web gratuite pour organiser des séances alterna
 - **Affichage lisible** : grand compte à rebours, durée totale restante, phase suivante et progression. Les phases sont distinguées par des couleurs : ambre (préparation), cyan (effort), violet (repos).
 - **Commandes et alertes** : pause/reprise, réinitialisation, plein écran, signaux sonores, annonces vocales et vibrations lorsque le navigateur le permet.
 - **Programmes personnalisés** : sauvegarde locale des réglages pour retrouver ses séances.
+- **Partage par QR code** : un lien transmet les paramètres de la séance, sans compte ni serveur.
 
 ### Utilisation
 
 Ouvrez [l’application](https://sebrbo.github.io/PhysioTimer/), choisissez **Tabata**, **Rounds** ou **Chronomètre**, puis ajustez les paramètres et démarrez la séance. Les durées se règlent en minutes et secondes (`MM:SS`).
+
+Pour partager une séance, configurez ses intervalles puis cliquez sur **Partager**. Le QR code s’affiche sur l’écran ; le patient peut le scanner pour ouvrir le programme et appuyer sur **Démarrer la séance**. Il est aussi possible de copier le lien ou de télécharger le QR code. Le lien ne contient que les paramètres temporels et les nombres de rounds/cycles : n’y ajoutez pas de données personnelles. Une séance reçue n’écrase pas les réglages locaux et n’est enregistrée que sur demande.
 
 PhysioTimer est une **Progressive Web App (PWA)** : après un premier chargement, elle peut être installée sur un appareil compatible et utilisée hors connexion. Les programmes et préférences restent enregistrés dans le navigateur utilisé ; ils ne sont pas synchronisés entre appareils.
 
@@ -48,10 +51,13 @@ PhysioTimer is a free web app for structuring workouts with alternating work and
 - **Clear display**: large countdown, overall time remaining, upcoming phase and progress. Phases use distinct colors: amber (preparation), cyan (work) and purple (rest).
 - **Controls and cues**: pause/resume, reset, fullscreen, audible signals, voice announcements and vibration where supported.
 - **Saved presets**: store session settings locally for later use.
+- **QR code sharing**: a short link transfers session settings without an account or server.
 
 ### Getting started
 
 Open the [app](https://sebrbo.github.io/PhysioTimer/), select **Tabata**, **Rounds** or **Stopwatch**, adjust the settings and start your session. Durations are entered as minutes and seconds (`MM:SS`).
+
+To share a session, configure its intervals and select **Share**. The QR code lets another person open the session on a phone and tap **Start session**. You can also copy the link or download the QR code. Links contain timing and round/cycle settings only; do not include personal information. Shared sessions do not overwrite or automatically save local settings.
 
 PhysioTimer is a **Progressive Web App (PWA)**. After its first load, it can be installed on compatible devices and used offline. Presets and preferences are stored in the current browser and are not synchronized across devices.
 
@@ -80,6 +86,12 @@ Pour exécuter les tests du moteur / To run the timer engine tests:
 ```bash
 node --test tests/test-core.cjs
 ```
+
+### Génération des QR codes / QR code generation
+
+Les QR codes sont générés localement dans le navigateur, sans service externe. La bibliothèque QR utilisée est sous licence MIT (voir [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)).
+
+QR codes are generated locally in the browser without contacting an external service. The embedded QR library is MIT-licensed (see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)).
 
 ## Licence / License
 

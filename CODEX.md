@@ -7,6 +7,8 @@ Its structure deliberately matches Sebrbo's PhysioTempo, PhysioReact and PhysioS
 - `index.html` is the UI shell; IDs are a stable contract with `js/app.js`.
 - `css/style.css` styles mobile, desktop, countdown, dialogs and fullscreen.
 - `js/core.js` is testable timing math and session scheduling, with no DOM.
+- `js/share.js` encodes/decodes compact links and rejects invalid incoming settings.
+- `js/qr.js` bundles an MIT-licensed third-party QR encoder for entirely local rendering; preserve `THIRD_PARTY_NOTICES.md`.
 - `js/i18n.js` holds FR/EN strings and UI translation.
 - `js/app.js` manages session state, Web Audio, Wake Lock, settings and presets.
 - `service-worker.js` and `manifest.webmanifest` make the site an offline PWA.
@@ -37,3 +39,12 @@ These are source-available noncommercial licenses, not OSI-approved open source 
 ## Duration input (v0.3.2)
 
 The 5 time settings consist of two named inputs per field: `${field}Min` and `${field}Sec`, enclosed by `.duration-entry` and a permanent `:`. The `durationFields` loop in `js/app.js` binds these to integer seconds and validates seconds under 60. Preserve input names and the colon UI if editing duration behavior.
+
+## Sharing and QR code (v0.4.0)
+
+- Share tokens contain only a version, mode and seven integer timing parameters; never encode patient names or health information.
+- Shared sessions must stay in memory and never overwrite localStorage presets or stored program configuration without an explicit user action.
+- When changing URL encoding, keep backward compatibility with version 1 tokens if possible and test invalid query values.
+- QR must be generated locally without external network calls.
+- A patient starts with an explicit click, which unlocks audio on mobile browsers.
+- Run `node --test tests/*.cjs` including share link tests.
