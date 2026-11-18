@@ -90,6 +90,24 @@ La consultation, la modification et le partage sont autorisés dans les limites 
 
 Viewing, modifying and sharing are permitted under the license terms, **for noncommercial purposes only**. This is a *source-available* project, not OSI-approved open source software.
 
+### Utilisations autorisées / Permitted uses
+
+**Français**
+
+PhysioTimer peut être utilisé gratuitement dans un cadre personnel, éducatif ou professionnel, notamment par les masseurs-kinésithérapeutes, les professionnels de santé, les établissements de soins et les structures sportives.
+
+Cette autorisation inclut explicitement son utilisation dans le cadre de prestations professionnelles rémunérées, ainsi que le partage gratuit de programmes avec les patients par lien ou QR code.
+
+Cette autorisation complémentaire s'applique aux éléments de PhysioTimer dont l'auteur détient les droits, dans le respect des licences des composants tiers.
+
+**English**
+
+PhysioTimer may be used free of charge for personal, educational or professional purposes, including by physiotherapists, healthcare professionals, healthcare facilities and sports organizations.
+
+This permission explicitly includes use during paid professional services, as well as the free sharing of workout programs with patients through links or QR codes.
+
+This additional permission applies to the parts of PhysioTimer owned by the author, subject to the licenses of third-party components.
+
 © 2026 Sebrbo and contributors.
 
 
